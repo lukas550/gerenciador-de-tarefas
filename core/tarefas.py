@@ -16,7 +16,7 @@ def adicionar_tarefa(nome, descricao): # Função para adicionar uma tarefa á l
         raise ValueError("Máximo de caracteres em descrição foi antigido!")
 
     return {
-        "tarefa": nome,
+        "nome_da_tarefa": nome,
         "descricao": descricao,
         "status": False
     }
