@@ -1,3 +1,6 @@
+from core import tarefas
+from core import organizacao
+from core import arquivo
 
 menu = {
     "1": "Adicionar Tarefa",
@@ -6,8 +9,22 @@ menu = {
     "4": "Excluir Tarefa",
     "5": "Sair"
 }
+lista_tarefas = [
+
+]
+
+try:
+    arquivo_salvo = arquivo.carregar_tarefas()
+
+    for item in arquivo_salvo:
+        lista_tarefas.append(item)
+except FileNotFoundError:
+    arquivo.criar_arquivo()
 
 while True:
+    organizacao.lin("-")
+    organizacao.tabela(menu)
+    organizacao.lin("-")
 
     escolha = input("Digite o número da opção que deseja: ").strip()
 
