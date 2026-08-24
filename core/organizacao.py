@@ -6,6 +6,6 @@ def lin(char, qtd=30):
 def tabela(menu):
     if isinstance(menu, dict):
         for nu, item in menu.items():
-            print(f"{nu}. {menu}")
+            print(f"{nu}. {item}")
     else:
         print("\nO objeto precisa ser um dicioário!\n")
