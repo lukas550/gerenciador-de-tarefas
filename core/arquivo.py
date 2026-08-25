@@ -8,32 +8,24 @@ def criar_arquivo():
         pass
 
 def salvar_arquivo(tarefas, caminho="tarefas.txt"):
-    try:
-        with open(caminho, "w", encoding="utf-8") as arquivo:
-            for tarefa in tarefas:
-                status = "Concluída" if tarefa["status"] else "Não Concluida"
-                linha = f"{tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} | {status}\n"
+    with open(caminho, "w", encoding="utf-8") as arquivo:
+        for tarefa in tarefas:
+            status = "Concluída" if tarefa["status"] else "Não Concluida"
+            linha = f"{tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} | {status}\n"
 
-                arquivo.write(linha)
-
-    except FileNotFoundError:
-        print("\nO arquivo não existe!\n")
+            arquivo.write(linha)
 
 def carregar_tarefas(caminho="tarefas.txt"):
-    try:
-        with open(caminho, "r", encoding="utf-8") as arquivo:
-            tarefas = []
+    with open(caminho, "r", encoding="utf-8") as arquivo:
+        tarefas = []
 
-            for linha in arquivo:
-                partes = linha.strip().split(" | ")
-                if len(partes) == 3:
-                    tarefas.append({
-                        "nome_da_tarefa": partes[0],
-                        "descricao": partes[1],
-                        "status": partes[2] == "Concluída"
-                    })
+        for linha in arquivo:
+            partes = linha.strip().split(" | ")
+            if len(partes) == 3:
+                tarefas.append({
+                    "nome_da_tarefa": partes[0],
+                    "descricao": partes[1],
+                    "status": partes[2] == "Concluída"
+                })
 
-            return tarefas
-    except FileNotFoundError:
-        print("\nO arquivo não existe!\n")
-        return []
+        return tarefas

@@ -9,18 +9,12 @@ menu = {
     "4": "Excluir Tarefa",
     "5": "Sair"
 }
-lista_tarefas = [
-
-]
 
 try:
-    arquivo_salvo = arquivo.carregar_tarefas()
-
-    for item in arquivo_salvo:
-        lista_tarefas.append(item)
+    lista_tarefas = arquivo.carregar_tarefas()
 except FileNotFoundError:
     arquivo.criar_arquivo()
-
+    lista_tarefas = []
 while True:
     organizacao.lin("-")
     organizacao.tabela(menu)
