@@ -23,7 +23,22 @@ while True:
     escolha = input("Digite o número da opção que deseja: ").strip()
 
     if escolha == "1":
-        pass
+
+        organizacao.lin("-")
+        try:
+            nome_da_tarefa = input("Digite o nome da tarefa: ")
+            descricao_da_tarefa = input("Digite a descrição da tarefas:")
+
+            tarefa = tarefas.adicionar_tarefa(nome_da_tarefa, descricao_da_tarefa)
+        except ValueError as e:
+            print(f"\n{e}\n")
+        else:
+            lista_tarefas.append(tarefa)
+            arquivo.salvar_arquivo(lista_tarefas)
+
+            print("\nTarefa salva com sucesso!\n")
+        organizacao.lin("-")
+
     elif escolha == "2":
         pass
     elif escolha == "3":
