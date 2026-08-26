@@ -23,7 +23,7 @@ def adicionar_tarefa(nome, descricao): # Função para adicionar uma tarefa á l
 
 def listar_tarefas(tarefas): # lista as tarefas ordenadamente.
     if not tarefas:
-        print("\nSem tarefas!\n")
+        print("\nSem tarefas cadastradas!\n")
     else:
         for idx, tarefa in enumerate(tarefas, 1):
             status = "Concluída" if tarefa["status"] else "Não concluída"
@@ -36,5 +36,9 @@ def concluir_tarefa(tarefas, indice):
     
     tarefas[indice]["status"] = True
 
-def excluir_tarefa(tarefa):
-    pass
+def excluir_tarefa(tarefas, indice):
+    if indice < 0 or indice >= len(tarefas):
+        raise IndexError("Indice inválido!")
+
+    tarefa_removida = tarefas.pop(indice)
+    return tarefa_removida

@@ -52,7 +52,7 @@ while True:
             if not lista_tarefas:
                 print("\nSem tarefas cadastradas!\n")
             else:
-                idx = int(input("Digite o número da tarefa (verifique a 2 opção para saber): ")) - 1
+                idx = int(input("Digite o número da tarefa (consulte a opção 2 para informações): ")) - 1
 
                 tarefas.concluir_tarefa(lista_tarefas, idx)
                 arquivo.salvar_arquivo(lista_tarefas)
@@ -67,7 +67,31 @@ while True:
         organizacao.lin("-")
 
     elif escolha == "4":
-        pass
+
+        organizacao.lin("-")
+        try:
+            if not lista_tarefas:
+                print("\nSem tarefas cadastradas!\n")
+            else:
+                idx = int(input("Digite o número da tarefa: (consulte a opção 2 para informações): ")) - 1
+
+                tarefa_a_excluir = lista_tarefas[idx]
+                escolha = input(f"Tem certeza que deseja excluir {tarefa_a_excluir["nome_da_tarefa"]}? Essa ação é IRREVERSÍVEL\n").lower().strip()
+
+                if escolha in ["sim", "ss", "s"]:
+                    tarefas.excluir_tarefa(lista_tarefas, idx)
+                    arquivo.salvar_arquivo(lista_tarefas)
+
+                    print("\nTarefa excluída com sucesso!\n")
+                else:
+                    print("\nExclusão cancelada!\n")
+        except IndexError as e:
+            print(f"\n{e}\n")
+        except ValueError:
+            print("\nDigite um valor válido!\n")
+
+        organizacao.lin("-")
+        
     elif escolha == "5":
         print("\nEncerrando...\n")
         break
