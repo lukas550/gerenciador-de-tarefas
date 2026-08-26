@@ -12,7 +12,7 @@ O projeto é estruturado em pacotes, separando a lógica de negócio (manipulaç
 
 Ao iniciar a aplicação, o programa tenta carregar as tarefas previamente salvas no arquivo `tarefas.txt`. Caso o arquivo não exista, ele é criado automaticamente e a lista de tarefas inicia vazia.
 
-O usuário interage com o sistema por meio de um menu numérico exibido no terminal, escolhendo uma das opções disponíveis. Ações que alteram os dados, como adicionar uma tarefa, são persistidas automaticamente no arquivo de texto, garantindo que as informações não sejam perdidas ao encerrar o programa.
+O usuário interage com o sistema por meio de um menu numérico exibido no terminal, escolhendo uma das opções disponíveis. Ações que alteram os dados, como adicionar ou concluir uma tarefa, são persistidas automaticamente no arquivo de texto, garantindo que as informações não sejam perdidas ao encerrar o programa.
 
 ## Estrutura do Projeto
 
@@ -24,11 +24,12 @@ gerenciador-de-tarefas/
 │   ├── arquivo.py
 │   └── organizacao.py
 ├── main.py
-├── tarefas.txt
 ├── .gitignore
 ├── LICENSE
 └── README.md
 ```
+
+> O arquivo `tarefas.txt` é gerado automaticamente na primeira execução e não é versionado no repositório.
 
 ## Módulos e Funcionalidades
 
@@ -39,7 +40,7 @@ Ponto de entrada da aplicação. Responsável por:
 - Carregar as tarefas salvas ao iniciar o programa, tratando o caso em que o arquivo ainda não existe
 - Exibir o menu principal em loop contínuo
 - Capturar a escolha do usuário e direcionar para a função correspondente
-- Tratar entradas inválidas, exibindo mensagem de erro sem interromper a execução
+- Tratar entradas inválidas exibindo mensagem de erro sem interromper a execução
 
 ### core/tarefas.py
 
@@ -47,18 +48,18 @@ Módulo responsável pela lógica de negócio relacionada às tarefas (CRUD). Ca
 
 ```python
 {
-    "nome_da_tarefa": string,
-    "descricao": string (máximo de 50 caracteres),
-    "status": bool (True para concluída, False para pendente)
+    "nome_da_tarefa": str,
+    "descricao": str,  # máximo de 50 caracteres
+    "status": bool     # True para concluída, False para pendente
 }
 ```
 
 Funções do módulo:
 
-- `adicionar_tarefa(nome, descricao)`: valida os dados de entrada e retorna um dicionário representando a nova tarefa. Lança `ValueError` caso o nome ou a descrição estejam vazios, ou caso a descrição ultrapasse 50 caracteres.
-- `listar_tarefas(tarefas)`: recebe a lista de tarefas em memória e exibe cada uma numerada, junto com sua descrição e o status em texto (Concluída ou Não concluída). Caso a lista esteja vazia, informa que não há tarefas cadastradas.
-- `concluir_tarefa(tarefa)`: função planejada para marcar uma tarefa como concluída. Ainda não implementada.
-- `excluir_tarefa(tarefa)`: função planejada para remover uma tarefa da lista. Ainda não implementada.
+- `adicionar_tarefa(nome, descricao)`: valida os dados de entrada e retorna um dicionário representando a nova tarefa. Lança `ValueError` caso o nome ou a descrição estejam vazios (incluindo strings com apenas espaços) ou caso a descrição ultrapasse 50 caracteres.
+- `listar_tarefas(tarefas)`: recebe a lista de tarefas em memória e exibe cada uma numerada, com sua descrição e o status em texto (Concluída ou Não concluída). Caso a lista esteja vazia, informa que não há tarefas cadastradas.
+- `concluir_tarefa(tarefas, indice)`: marca a tarefa no índice informado como concluída (status = True). Lança `IndexError` caso o índice seja inválido.
+- `excluir_tarefa(tarefas, indice)`: remove a tarefa no índice informado da lista usando `pop()` e retorna a tarefa removida. Lança `IndexError` caso o índice seja inválido.
 
 ### core/arquivo.py
 
@@ -68,7 +69,7 @@ Funções do módulo:
 
 - `criar_arquivo()`: cria o arquivo `tarefas.txt` caso ele ainda não exista, evitando erros de leitura na primeira execução.
 - `salvar_arquivo(tarefas, caminho)`: sobrescreve o arquivo com a lista de tarefas atual, uma tarefa por linha.
-- `carregar_tarefas(caminho)`: lê o arquivo linha a linha e reconstrói a lista de dicionários de tarefas, convertendo o status salvo em texto de volta para valor booleano. Caso o arquivo não exista, a exceção `FileNotFoundError` é propagada para quem chamou a função, que é responsável por tratá-la.
+- `carregar_tarefas(caminho)`: lê o arquivo linha a linha e reconstrói a lista de dicionários de tarefas, convertendo o status salvo em texto de volta para valor booleano. Caso o arquivo não exista, a exceção `FileNotFoundError` é propagada para o chamador, que é responsável por tratá-la.
 
 O formato de cada linha do arquivo segue o padrão:
 
@@ -77,6 +78,8 @@ Nome da Tarefa | Descrição da tarefa | Concluída
 ```
 
 O campo de status é salvo como `Concluída` ou `Não Concluida`, mantendo o arquivo legível para leitura manual.
+
+> Limitação conhecida: o separador ` | ` pode causar comportamento inesperado caso o nome ou a descrição da tarefa contenham essa sequência de caracteres. Será resolvido na migração para JSON.
 
 ### core/organizacao.py
 
@@ -89,13 +92,13 @@ Funções do módulo:
 
 ## Menu Principal
 
-| Opção | Ação             | Situação        |
-|-------|------------------|------------------|
-| 1     | Adicionar Tarefa | Implementada     |
-| 2     | Listar Tarefas   | Implementada     |
-| 3     | Concluir Tarefa  | Em desenvolvimento |
-| 4     | Excluir Tarefa   | Em desenvolvimento |
-| 5     | Sair             | Implementada     |
+| Opção | Ação             |
+|-------|------------------|
+| 1     | Adicionar Tarefa |
+| 2     | Listar Tarefas   |
+| 3     | Concluir Tarefa  |
+| 4     | Excluir Tarefa   |
+| 5     | Sair             |
 
 ## Como Executar
 
@@ -118,26 +121,12 @@ cd gerenciador-de-tarefas
 python main.py
 ```
 
-O arquivo `tarefas.txt` será criado automaticamente na primeira execução, na raiz do projeto, e não é versionado no repositório.
-
 ## Tecnologias Utilizadas
 
 - Python 3
 - Manipulação de arquivos (leitura e escrita em `.txt`)
-- Tratamento de exceções (`try/except`)
+- Tratamento de exceções (`try/except/else`)
 - Programação modular com pacotes e importações
-
-## Status do Projeto
-
-O projeto está em desenvolvimento ativo. A estrutura de módulos está completa e integrada ao `main.py`. As funcionalidades de adicionar e listar tarefas já estão implementadas e funcionais. As funcionalidades de concluir e excluir tarefas estão planejadas para as próximas etapas.
-
-## Futuras Alterações
-
-- Implementar a funcionalidade de concluir tarefa, permitindo marcar uma tarefa existente como concluída
-- Implementar a funcionalidade de excluir tarefa, removendo uma tarefa da lista e atualizando o arquivo
-- Avaliar o uso de importações explícitas no `__init__.py` do pacote `core`, simplificando os imports no `main.py`
-- Revisar a limitação do separador `|` usado na persistência em `.txt`, que pode causar problemas caso o nome ou a descrição de uma tarefa contenha esse caractere
-- Melhorar mensagens de feedback ao usuário, deixando a experiência de uso mais clara
 
 ## Licença
 
