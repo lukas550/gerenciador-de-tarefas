@@ -40,8 +40,12 @@ while True:
         organizacao.lin("-")
 
     elif escolha == "2":
-        pass
-    elif escolha == "3":
+
+        organizacao.lin("-")
+        tarefas.listar_tarefas(lista_tarefas)
+        organizacao.lin("-")
+
+    elif escolha == "3": 
         pass
     elif escolha == "4":
         pass

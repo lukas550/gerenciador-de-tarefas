@@ -21,8 +21,14 @@ def adicionar_tarefa(nome, descricao): # Função para adicionar uma tarefa á l
         "status": False
     }
 
-def listar_tarefas(): # lista as tarefas ordenadamente.
-    pass # TODO: quando tiver uma persistência será feito.
+def listar_tarefas(tarefas): # lista as tarefas ordenadamente.
+    if not tarefas:
+        print("\nSem tarefas!\n")
+    else:
+        for idx, tarefa in enumerate(tarefas, 1):
+            status = "Concluída" if tarefa["status"] else "Não concluída"
+
+            print(f"{idx}. {tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} - STATUS: {status}")
 
 def concluir_tarefa(tarefa):
     pass
