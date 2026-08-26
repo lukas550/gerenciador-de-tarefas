@@ -28,10 +28,13 @@ def listar_tarefas(tarefas): # lista as tarefas ordenadamente.
         for idx, tarefa in enumerate(tarefas, 1):
             status = "Concluída" if tarefa["status"] else "Não concluída"
 
-            print(f"{idx}. {tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} - STATUS: {status}")
+            print(f"{idx}. {tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} | STATUS: {status}")
 
-def concluir_tarefa(tarefa):
-    pass
+def concluir_tarefa(tarefas, indice):
+    if indice < 0 or indice >= len(tarefas):
+        raise IndexError("Indice inválido!")
+    
+    tarefas[indice]["status"] = True
 
 def excluir_tarefa(tarefa):
     pass

@@ -27,7 +27,7 @@ while True:
         organizacao.lin("-")
         try:
             nome_da_tarefa = input("Digite o nome da tarefa: ")
-            descricao_da_tarefa = input("Digite a descrição da tarefas:")
+            descricao_da_tarefa = input("Digite a descrição da tarefas: ")
 
             tarefa = tarefas.adicionar_tarefa(nome_da_tarefa, descricao_da_tarefa)
         except ValueError as e:
@@ -45,8 +45,27 @@ while True:
         tarefas.listar_tarefas(lista_tarefas)
         organizacao.lin("-")
 
-    elif escolha == "3": 
-        pass
+    elif escolha == "3":
+
+        organizacao.lin("-")
+        try:
+            if not lista_tarefas:
+                print("\nSem tarefas cadastradas!\n")
+            else:
+                idx = int(input("Digite o número da tarefa (verifique a 2 opção para saber): ")) - 1
+
+                tarefas.concluir_tarefa(lista_tarefas, idx)
+                arquivo.salvar_arquivo(lista_tarefas)
+
+                print("\nTarefa concluída com sucesso!\n")
+
+        except IndexError as e:
+            print(f"\n{e}\n")
+        except ValueError:
+            print("\nDigite um valor válido!\n")
+
+        organizacao.lin("-")
+
     elif escolha == "4":
         pass
     elif escolha == "5":
