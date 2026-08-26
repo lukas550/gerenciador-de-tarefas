@@ -26,8 +26,8 @@ while True:
 
         organizacao.lin("-")
         try:
-            nome_da_tarefa = input("Digite o nome da tarefa: ")
-            descricao_da_tarefa = input("Digite a descrição da tarefas: ")
+            nome_da_tarefa = input("Digite o nome da tarefa: ").strip()
+            descricao_da_tarefa = input("Digite a descrição da tarefa: ").strip()
 
             tarefa = tarefas.adicionar_tarefa(nome_da_tarefa, descricao_da_tarefa)
         except ValueError as e:
@@ -73,12 +73,12 @@ while True:
             if not lista_tarefas:
                 print("\nSem tarefas cadastradas!\n")
             else:
-                idx = int(input("Digite o número da tarefa: (consulte a opção 2 para informações): ")) - 1
+                idx = int(input("Digite o número da tarefa (consulte a opção 2 para informações): ")) - 1
 
                 tarefa_a_excluir = lista_tarefas[idx]
-                escolha = input(f"Tem certeza que deseja excluir {tarefa_a_excluir["nome_da_tarefa"]}? Essa ação é IRREVERSÍVEL\n").lower().strip()
+                confirmacao = input(f"Tem certeza que deseja excluir {tarefa_a_excluir['nome_da_tarefa']}? Essa ação é IRREVERSÍVEL\n").lower().strip()
 
-                if escolha in ["sim", "ss", "s"]:
+                if confirmacao in ["sim", "ss", "s"]:
                     tarefas.excluir_tarefa(lista_tarefas, idx)
                     arquivo.salvar_arquivo(lista_tarefas)
 

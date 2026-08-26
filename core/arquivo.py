@@ -11,7 +11,7 @@ def salvar_arquivo(tarefas, caminho="tarefas.txt"):
     with open(caminho, "w", encoding="utf-8") as arquivo:
         for tarefa in tarefas:
             status = "Concluída" if tarefa["status"] else "Não Concluida"
-            linha = f"{tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} | {status}\n"
+            linha = f"{tarefa['nome_da_tarefa']} | {tarefa['descricao']} | {status}\n"
 
             arquivo.write(linha)
 

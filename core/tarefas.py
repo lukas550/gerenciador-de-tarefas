@@ -9,11 +9,11 @@ estrutura:
     }
 """
 def adicionar_tarefa(nome, descricao): # Função para adicionar uma tarefa á lista.
-    if not nome or not descricao:
+    if not nome.strip() or not descricao.strip():
         raise ValueError("Nome ou descrição estão faltando!")
 
     if len(descricao) > 50:
-        raise ValueError("Máximo de caracteres em descrição foi antigido!")
+        raise ValueError("Máximo de caracteres em descrição foi atingido!")
 
     return {
         "nome_da_tarefa": nome,
@@ -28,7 +28,7 @@ def listar_tarefas(tarefas): # lista as tarefas ordenadamente.
         for idx, tarefa in enumerate(tarefas, 1):
             status = "Concluída" if tarefa["status"] else "Não concluída"
 
-            print(f"{idx}. {tarefa["nome_da_tarefa"]} | {tarefa["descricao"]} | STATUS: {status}")
+            print(f"{idx}. {tarefa['nome_da_tarefa']} | {tarefa['descricao']} | STATUS: {status}")
 
 def concluir_tarefa(tarefas, indice):
     if indice < 0 or indice >= len(tarefas):
