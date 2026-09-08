@@ -22,7 +22,7 @@ def salvar_arquivo(dados_a_salvar):
     except (OSError, TypeError) as e:
         print(f"\nErro no salvamento do arquivo: {e}")
 
-def carregar_tarefas():
+def carregar_arquivo():
     try:
         with open(ARQUIVO, "r", encoding="utf-8") as f:
             dados = json.load(f)
