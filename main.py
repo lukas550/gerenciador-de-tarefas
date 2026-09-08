@@ -53,7 +53,10 @@ while True:
         lin("-")
 
     elif escolha == "2":
-        pass
+
+        lin("-")
+        listar_tarefas(tarefas)
+        lin("-")
 
     elif escolha == "3":
         pass
