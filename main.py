@@ -26,7 +26,7 @@ print("Digite 'menu' para visualizar a tabela novamente!")
 
 while True:
     print("\nDigite o número ou comando que deseja:")
-    escolha = input("= ").lower().strip()
+    escolha = input(">> ").lower().strip()
 
     if escolha == "menu":
 
@@ -49,7 +49,7 @@ while True:
             tarefas.append(tarefa)
             salvar_arquivo(tarefas)
 
-            print(f"\nTarefa {nome_da_tarefa.capitalize()} foi cadastrado!\n")
+            print(f"\nTarefa {nome_da_tarefa.capitalize()} foi cadastrada!\n")
         lin("-")
 
     elif escolha == "2":
@@ -63,9 +63,10 @@ while True:
         lin("-")
         try:
             print("Digite o nome da tarefa buscada ou o comando sair para cancelar a ação (recomenda-se visualizar a opção 2): ")
-            tarefa_buscada = input("= ").lower().strip()
+            tarefa_buscada = input(">> ").lower().strip()
 
             if tarefa_buscada == "sair":
+                print("\nOperação cancelada.\n")
                 continue
             else:
                 concluir_tarefa(tarefa_buscada, tarefas)
@@ -81,15 +82,16 @@ while True:
         lin("-")
         try:
             print("Digite o nome da tarefa buscada ou o comando sair para cancelar a ação (recomenda-se visualizar a opção 2): ")
-            tarefa_buscada = input("= ").lower().strip()
+            tarefa_buscada = input(">> ").lower().strip()
 
             if tarefa_buscada == "sair":
+                print("\nOperação cancelada.\n")
                 continue
             else:
                 tarefa_a_excluir = excluir_tarefa(tarefa_buscada, tarefas)
 
                 print(f"\nTem certeza que deseja excluir {tarefa_buscada.capitalize()}? (sim/não): ")
-                confirmacao = input("= ").lower().strip()
+                confirmacao = input(">> ").lower().strip()
 
                 if confirmacao in ["sim", "ss", "s"]:
                     tarefas.remove(tarefa_a_excluir)
@@ -103,8 +105,15 @@ while True:
         lin("-")
 
     elif escolha == "5":
-        print("\nEncerrando...\n")
-        break
+        print("\nTem certeza que deseja encerrar? (sim/não): ")
+        confirmacao = input(">> ")
+
+        if confirmacao in ["sim", "ss", "s"]:
+            print("\nEncerrando...\n")
+            break
+        else:
+            print("\nOperação cancelada.\n")
+            continue
 
     else:
         print("\nDigite algo válido!\n")
