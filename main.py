@@ -64,6 +64,7 @@ while True:
         try:
             print("Digite o nome da tarefa buscada ou o comando sair para cancelar a ação (recomenda-se visualizar a opção 2): ")
             tarefa_buscada = input("= ").lower().strip()
+
             if tarefa_buscada == "sair":
                 continue
             else:
@@ -76,7 +77,30 @@ while True:
         lin("-")
 
     elif escolha == "4":
-        pass
+
+        lin("-")
+        try:
+            print("Digite o nome da tarefa buscada ou o comando sair para cancelar a ação (recomenda-se visualizar a opção 2): ")
+            tarefa_buscada = input("= ").lower().strip()
+
+            if tarefa_buscada == "sair":
+                continue
+            else:
+                tarefa_a_excluir = excluir_tarefa(tarefa_buscada, tarefas)
+
+                print(f"\nTem certeza que deseja excluir {tarefa_buscada.capitalize()}? (sim/não): ")
+                confirmacao = input("= ").lower().strip()
+
+                if confirmacao in ["sim", "ss", "s"]:
+                    tarefas.remove(tarefa_a_excluir)
+                    salvar_arquivo(tarefas)
+                    print(f"\nTarefa {tarefa_buscada.capitalize()} foi excluída!\n")
+                else:
+                    print("\nOperação cancelada.\n")
+
+        except ValueError as e:
+            print(f"\n{e}\n")
+        lin("-")
 
     elif escolha == "5":
         print("\nEncerrando...\n")
