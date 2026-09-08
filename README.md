@@ -1,6 +1,6 @@
 # Gerenciador de Tarefas
 
-Aplicação de linha de comando (CLI) para gerenciamento de tarefas, desenvolvida em Python. O projeto permite adicionar, listar, concluir e excluir tarefas, com persistência local em arquivo de texto.
+Aplicação de linha de comando (CLI) para gerenciamento de tarefas, desenvolvida em Python. O projeto permite adicionar, listar, concluir e excluir tarefas, com persistência local em arquivo JSON.
 
 ## Sobre o Projeto
 
@@ -10,9 +10,11 @@ O projeto é estruturado em pacotes, separando a lógica de negócio (manipulaç
 
 ## Como Funciona
 
-Ao iniciar a aplicação, o programa tenta carregar as tarefas previamente salvas no arquivo `tarefas.txt`. Caso o arquivo não exista, ele é criado automaticamente e a lista de tarefas inicia vazia.
+Ao iniciar a aplicação, o programa carrega as tarefas previamente salvas no arquivo `tarefas.json`. Caso o arquivo não exista ou esteja corrompido, ele é recriado automaticamente e a lista de tarefas inicia vazia.
 
-O usuário interage com o sistema por meio de um menu numérico exibido no terminal, escolhendo uma das opções disponíveis. Ações que alteram os dados, como adicionar ou concluir uma tarefa, são persistidas automaticamente no arquivo de texto, garantindo que as informações não sejam perdidas ao encerrar o programa.
+O usuário interage com o sistema por meio de um menu numérico exibido no terminal, podendo digitar o comando `menu` a qualquer momento para reexibi-lo. Ações que alteram os dados, como adicionar, concluir ou excluir uma tarefa, são persistidas automaticamente no arquivo JSON, garantindo que as informações não sejam perdidas ao encerrar o programa.
+
+As operações de concluir e excluir são feitas por meio do nome da tarefa, em vez de um índice numérico, tornando a interação mais intuitiva. A exclusão exige confirmação explícita do usuário antes de ser efetivada.
 
 ## Estrutura do Projeto
 
@@ -29,7 +31,7 @@ gerenciador-de-tarefas/
 └── README.md
 ```
 
-> O arquivo `tarefas.txt` é gerado automaticamente na primeira execução e não é versionado no repositório.
+> O arquivo `tarefas.json` é gerado automaticamente na primeira execução e não é versionado no repositório.
 
 ## Módulos e Funcionalidades
 
@@ -37,9 +39,10 @@ gerenciador-de-tarefas/
 
 Ponto de entrada da aplicação. Responsável por:
 
-- Carregar as tarefas salvas ao iniciar o programa, tratando o caso em que o arquivo ainda não existe
-- Exibir o menu principal em loop contínuo
+- Carregar as tarefas salvas ao iniciar o programa
+- Exibir o menu principal e permitir sua reexibição a qualquer momento pelo comando `menu`
 - Capturar a escolha do usuário e direcionar para a função correspondente
+- Solicitar confirmação do usuário antes de excluir uma tarefa
 - Tratar entradas inválidas exibindo mensagem de erro sem interromper a execução
 
 ### core/tarefas.py
@@ -48,38 +51,39 @@ Módulo responsável pela lógica de negócio relacionada às tarefas (CRUD). Ca
 
 ```python
 {
-    "nome_da_tarefa": str,
-    "descricao": str,  # máximo de 50 caracteres
-    "status": bool     # True para concluída, False para pendente
+    "tarefa": str,      # nome da tarefa, normalizado em minúsculas
+    "descricao": str,   # máximo de 50 caracteres
+    "concluida": bool   # True para concluída, False para pendente
 }
 ```
 
 Funções do módulo:
 
 - `adicionar_tarefa(nome, descricao)`: valida os dados de entrada e retorna um dicionário representando a nova tarefa. Lança `ValueError` caso o nome ou a descrição estejam vazios (incluindo strings com apenas espaços) ou caso a descrição ultrapasse 50 caracteres.
-- `listar_tarefas(tarefas)`: recebe a lista de tarefas em memória e exibe cada uma numerada, com sua descrição e o status em texto (Concluída ou Não concluída). Caso a lista esteja vazia, informa que não há tarefas cadastradas.
-- `concluir_tarefa(tarefas, indice)`: marca a tarefa no índice informado como concluída (status = True). Lança `IndexError` caso o índice seja inválido.
-- `excluir_tarefa(tarefas, indice)`: remove a tarefa no índice informado da lista usando `pop()` e retorna a tarefa removida. Lança `IndexError` caso o índice seja inválido.
+- `listar_tarefas(tarefas)`: recebe a lista de tarefas em memória e exibe cada uma com sua descrição e o status em texto (Concluída ou Não concluída). Caso a lista esteja vazia, informa que não há tarefas cadastradas.
+- `concluir_tarefa(tarefa_a_concluir, tarefas)`: busca a tarefa pelo nome informado e marca como concluída (`concluida = True`). Lança `ValueError` caso a tarefa não seja encontrada.
+- `excluir_tarefa(tarefa_a_excluir, tarefas)`: busca a tarefa pelo nome informado e a retorna, para que o chamador confirme e efetive a remoção da lista. Lança `ValueError` caso a tarefa não seja encontrada.
 
 ### core/arquivo.py
 
-Módulo responsável pela persistência dos dados em arquivo de texto (`tarefas.txt`), mantendo as informações salvas entre execuções do programa.
+Módulo responsável pela persistência dos dados em arquivo JSON (`tarefas.json`), mantendo as informações salvas entre execuções do programa.
 
 Funções do módulo:
 
-- `criar_arquivo()`: cria o arquivo `tarefas.txt` caso ele ainda não exista, evitando erros de leitura na primeira execução.
-- `salvar_arquivo(tarefas, caminho)`: sobrescreve o arquivo com a lista de tarefas atual, uma tarefa por linha.
-- `carregar_tarefas(caminho)`: lê o arquivo linha a linha e reconstrói a lista de dicionários de tarefas, convertendo o status salvo em texto de volta para valor booleano. Caso o arquivo não exista, a exceção `FileNotFoundError` é propagada para o chamador, que é responsável por tratá-la.
+- `salvar_arquivo(dados_a_salvar)`: sobrescreve o arquivo com a lista de tarefas atual, em formato JSON legível (`indent=4`). Trata erros de escrita (`OSError`) e de serialização (`TypeError`).
+- `carregar_arquivo()`: lê o arquivo e reconstrói a lista de dicionários de tarefas. Caso o arquivo não exista, é criado automaticamente com uma lista vazia. Caso o conteúdo esteja corrompido, a exceção `json.JSONDecodeError` é tratada e a função retorna uma lista vazia.
 
-O formato de cada linha do arquivo segue o padrão:
+A estrutura de cada tarefa no arquivo segue o formato:
 
+```json
+[
+    {
+        "tarefa": "estudar python",
+        "descricao": "revisar módulos e bibliotecas",
+        "concluida": false
+    }
+]
 ```
-Nome da Tarefa | Descrição da tarefa | Concluída
-```
-
-O campo de status é salvo como `Concluída` ou `Não Concluida`, mantendo o arquivo legível para leitura manual.
-
-> Limitação conhecida: o separador ` | ` pode causar comportamento inesperado caso o nome ou a descrição da tarefa contenham essa sequência de caracteres. Será resolvido na migração para JSON.
 
 ### core/organizacao.py
 
@@ -124,7 +128,7 @@ python main.py
 ## Tecnologias Utilizadas
 
 - Python 3
-- Manipulação de arquivos (leitura e escrita em `.txt`)
+- Manipulação de arquivos JSON
 - Tratamento de exceções (`try/except/else`)
 - Programação modular com pacotes e importações
 
