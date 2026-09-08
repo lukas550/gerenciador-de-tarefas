@@ -59,7 +59,21 @@ while True:
         lin("-")
 
     elif escolha == "3":
-        pass
+
+        lin("-")
+        try:
+            print("Digite o nome da tarefa buscada ou o comando sair para cancelar a ação (recomenda-se visualizar a opção 2): ")
+            tarefa_buscada = input("= ").lower().strip()
+            if tarefa_buscada == "sair":
+                continue
+            else:
+                concluir_tarefa(tarefa_buscada, tarefas)
+                salvar_arquivo(tarefas)
+                print(f"\nTarefa {tarefa_buscada.capitalize()} concluida com sucesso!\n")
+    
+        except ValueError as e:
+            print(f"\n{e}\n")
+        lin("-")
 
     elif escolha == "4":
         pass
