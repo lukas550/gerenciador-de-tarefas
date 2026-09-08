@@ -1,31 +1,39 @@
 # Módulo para salvar, carregar arquivos em .txt para a persistência.
+import json
 
-def criar_arquivo():
+"""
+estrutura do arquivo:
+[
+    {
+        "tarefa": str,
+        "descricao": str (máx 50 char),
+        "concluida": bool    
+    }
+]
+"""
+
+ARQUIVO = "tarefas.json"
+
+def salvar_arquivo(dados_a_salvar):
     try:
-        with open("tarefas.txt", "x", encoding="utf-8"):
-            pass
-    except FileExistsError:
-        pass
+        with open(ARQUIVO, "w", encoding="utf-8") as f:
+            json.dump(dados_a_salvar, f, ensure_ascii=False, indent=4)
 
-def salvar_arquivo(tarefas, caminho="tarefas.txt"):
-    with open(caminho, "w", encoding="utf-8") as arquivo:
-        for tarefa in tarefas:
-            status = "Concluída" if tarefa["status"] else "Não Concluida"
-            linha = f"{tarefa['nome_da_tarefa']} | {tarefa['descricao']} | {status}\n"
+    except (OSError, TypeError) as e:
+        print(f"\nErro no salvamento do arquivo: {e}")
 
-            arquivo.write(linha)
+def carregar_tarefas():
+    try:
+        with open(ARQUIVO, "r", encoding="utf-8") as f:
+            dados = json.load(f)
 
-def carregar_tarefas(caminho="tarefas.txt"):
-    with open(caminho, "r", encoding="utf-8") as arquivo:
-        tarefas = []
+            return dados
+    except FileNotFoundError:
+        salvar_arquivo([])
 
-        for linha in arquivo:
-            partes = linha.strip().split(" | ")
-            if len(partes) == 3:
-                tarefas.append({
-                    "nome_da_tarefa": partes[0],
-                    "descricao": partes[1],
-                    "status": partes[2] == "Concluída"
-                })
+        return []
 
-        return tarefas
+    except json.JSONDecodeError as e:
+        print(f"\nErro em salvar o arquivo: {e}\n")
+
+        return []
